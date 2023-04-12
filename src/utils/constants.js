@@ -1,5 +1,5 @@
 export const constants = {
-
+    Login:'Login',
     Login_Account: 'Login to your Account',
     Email: 'Email',
     Password: 'Password',

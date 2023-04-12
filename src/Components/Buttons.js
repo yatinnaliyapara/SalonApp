@@ -1,15 +1,18 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import colors from "../utils/colors";
 import fonts from "../utils/fonts";
 
 
-const Button = ({ label, onPress, innerContainerStyle }) => {
+const Button = ({ label, onPress, innerContainerStyle, isLoading }) => {
     return (
         <>
 
             <Pressable onPress={onPress} style={[styles.button, { ...innerContainerStyle }]}>
-                <Text style={styles.text_button}>{label}</Text>
+
+                {!!isLoading ? <ActivityIndicator size={'large'} color={colors.white} />
+                    : <Text style={styles.text_button}>{label}</Text>
+                }
             </Pressable>
 
 
@@ -32,7 +35,7 @@ const styles = StyleSheet.create({
             height: 2,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        shadowRadius: 3.70,
         elevation: 3,
     },
     text_button: {

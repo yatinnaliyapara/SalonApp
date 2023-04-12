@@ -18,8 +18,12 @@ const Input = ({
     maxLength,
     nol,
     multiline,
-    labelStyle
+    labelStyle,
+    onChangeText,
+    onFocus,
+    error
 }) => {
+    const [isFocused, setIsFocused] = React.useState(false);
 
 
     const Svgleft = Svgs[leftIcon];
@@ -28,8 +32,14 @@ const Input = ({
 
             <View style={{ flexDirection: "column", flex: 1, marginVertical: 10, width: '100%', height: 'auto' }}>
 
-                <Text style={[styles.label,{...labelStyle}]}>{label}</Text>
-                <View style={[styles.inputView, { ...inputContainerStyle }]}>
+                <Text style={[styles.label,
+                { ...labelStyle, color: error ? colors.red : isFocused ? colors.black : colors.black }]}>
+                    {label}
+                </Text>
+                <View style={[styles.inputView, {
+                    ...inputContainerStyle, borderColor:
+                        error ? colors.red : isFocused ? colors.yellow_dark : colors.yellow_dark,
+                }]}>
                     {leftIcon && <Svgleft width={20} height={20} />}
                     <TextInput
                         defaultValue={defaultValue}
@@ -41,10 +51,23 @@ const Input = ({
                         maxLength={maxLength}
                         multiline={multiline}
                         numberOfLines={nol}
+                        onChangeText={onChangeText}
+                        onFocus={onFocus}
+
 
                     />
                 </View>
+                {error && (
+                    <Text
+                        style={[
+                            styles.label,
+                            { marginTop: 7, color: colors.red, fontSize: 12 },
+                        ]}>
+                        {error}
+                    </Text>
+                )}
             </View>
+
         </>
     )
 

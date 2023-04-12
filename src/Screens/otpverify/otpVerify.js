@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, SafeAreaView, Dimensions, StyleSheet, Pressable } from "react-native";
 import * as Svg from "../../assets/Svg/svgs"
 import colors from "../../utils/colors";
@@ -11,15 +11,51 @@ import {
 } from 'react-native-confirmation-code-field';
 import Button from "../../Components/Buttons";
 import { constants } from "../../utils/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyOtpData } from "../../redux/commonSlice";
 
-const otpVerify = ({ navigation }) => {
+
+const CELL_COUNT = 6;
+const otpVerify = ({ navigation, route }) => {
+
+    const dispatch = useDispatch();
+    const { userdata, isLoading } = useSelector(state => state.auth);
+    const navRef = useRef();
+    const { mobile_number } = route?.params
+
+    console.log(route.params);
 
     const [value, setValue] = useState('');
-    const ref = useBlurOnFulfill({ value });
+    const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
         setValue,
     });
+
+    const onOtp = async () => {
+        let isValid = true;
+        if (!value) {
+            console.log('otp ::');
+            isValid = false;
+        }
+        if (isValid) {
+            console.log("PARAMS DATA ::", isValid, route?.params?.mobile_number, formData);
+            const mobile_number = route?.params?.mobile_number
+            const formData = {
+                mobile_number: mobile_number,
+                otp: value,
+                device_id: '',
+                device_token: '',
+                device_type: '',
+
+            }
+            console.log("Data form ::", formData);
+            dispatch(verifyOtpData(formData))
+        }
+    }
+
+    console.log('value :: ', value);
+
 
 
     return (
@@ -28,15 +64,8 @@ const otpVerify = ({ navigation }) => {
             <SafeAreaView style={styles.container}>
 
                 <View style={{ padding: 10, paddingVertical: 20 }}>
-                    {/* <Pressable
-                        onPress={() => navigation.goBack('')}
-                        style={styles.header}>
-                        <Svg.BackArrow width={30} height={30} />
-                        <Text style={styles.forgotTxt}>{"Forgot Password"}</Text>
-                    </Pressable> */}
-
                     <View style={styles.divider} />
-                    <Text style={styles.text}>{"Code has been send to +91 986*****99"}</Text>
+                    <Text style={styles.text}>{"Code has been send to +91 "}{mobile_number}</Text>
                 </View>
 
 
@@ -48,6 +77,7 @@ const otpVerify = ({ navigation }) => {
                     <CodeField
                         ref={ref}
                         {...props}
+                        cellCount={CELL_COUNT}
                         value={value}
                         onChangeText={setValue}
                         rootStyle={styles.codeFieldRoot}
@@ -78,7 +108,7 @@ const otpVerify = ({ navigation }) => {
 
             <Button
                 innerContainerStyle={{ width: '90%', alignSelf: "center", bottom: 30 }}
-                onPress={() => navigation.navigate('SalonOwner')}
+                onPress={onOtp}
                 label={constants?.verify} />
 
 

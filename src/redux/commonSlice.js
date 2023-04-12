@@ -1,0 +1,87 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { otpVerify, registerUser, salonData, salonsTime, verifyOtp } from "../service/CommonServices";
+import { useNavigation } from "@react-navigation/native";
+import { navigate } from "../routes";
+
+
+export const register = createAsyncThunk(
+    'auth/register',
+    async (userData, { dispatch, fulfillWithValue, rejectWithValue }) => {
+        const response = await registerUser(userData);
+        console.log("Response from Register :: ", response);
+        if (response?.status === 201) {
+            let otpData = { mobile_number: JSON.stringify(response?.data?.data?.mobile_number) }
+            dispatch(generateOtp(otpData));
+            return fulfillWithValue(response?.data?.data)
+        } else {
+            console.log("delete error case", response);
+        }
+        return rejectWithValue(response?.response?.data?.Error);
+    }
+)
+
+export const generateOtp = createAsyncThunk(
+    'auth/generate-otp',
+    async (otpData, { fulfillWithValue, rejectWithValue }) => {
+        const response = await otpVerify(otpData);
+        console.log("Respone on data", response);
+        if (response?.status === 201) {
+            navigate("OtpVerify", { mobile_number: otpData.mobile_number });
+            return fulfillWithValue(response?.data?.data);
+        } else {
+            console.log("delete error case", response);
+        }
+        return rejectWithValue(response?.response?.data?.Error);
+    }
+)
+
+export const verifyOtpData = createAsyncThunk(
+    'auth/login',
+    async (otpData, { fulfillWithValue, rejectWithValue }) => {
+        const response = await verifyOtp(otpData);
+        console.log("Response on login api token :::", response);
+        if (response?.status === 200) {
+            navigate("SalonOwner");
+            return fulfillWithValue(response?.data?.data?.access_token);
+        } else {
+            console.log("delete error case", response);
+        }
+        return rejectWithValue(response?.response?.data?.Error);
+    }
+)
+
+
+// salon Create
+export const salonOwner = createAsyncThunk(
+    'auth/salons',
+    async (salonDetails, { fulfillWithValue, rejectWithValue }) => {
+        const response = await salonData(salonDetails);
+        console.log("Response on salon Create", response);
+        if (response?.status) {
+            navigate("UploadImage");
+            return fulfillWithValue(response?.data?.data)
+        } else {
+            console.log("delete error case", response);
+        }
+        return rejectWithValue(response?.response?.data?.error);
+    }
+)
+
+// Salons Times
+export const salonTimedata = createAsyncThunk(
+    'auth/salons/timings',
+    async (salonTimes, { fulfillWithValue, rejectWithValue }) => {
+
+        const res = await salonsTime(salonTimes);
+        console.log("Respnse on salon details", response, salonDetails);
+        if (res?.status === 201) {
+            console.log("salon Details", res?.data?.data);
+            return fulfillWithValue(res?.data?.data)
+        } else {
+            console.log("delete error case", res);
+
+        }
+        return rejectWithValue(res?.res?.data?.Error);
+
+    }
+)
