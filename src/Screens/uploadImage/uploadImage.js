@@ -7,13 +7,16 @@ import fonts from "../../utils/fonts";
 import { constants } from "../../utils/constants";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import images from "../../utils/images";
+import { useDispatch } from "react-redux";
+import { uploadLogo } from "../../redux/commonSlice";
 
 
 const { width, height } = Dimensions.get('window');
 
 const uploadImage = ({ navigation }) => {
 
-    const [image, setImage] = useState()
+    const dispatch = useDispatch();
+    const [image, setImage] = useState();
 
     const chooseImage = async () => {
         let options = {
@@ -30,7 +33,20 @@ const uploadImage = ({ navigation }) => {
             },
         };
         const result = await launchImageLibrary(options);
+        console.log("Result :::", result);
         setImage(result?.assets[0])
+    }
+
+
+    const uploadImg = () => {
+        let formData = new FormData();
+        formData.append('logo', {
+            uri: image.uri,
+            type: image.type,
+            name: image.fileName
+        });
+        dispatch(uploadLogo(formData))
+        console.log("Upload on Data ::", formData);
     }
 
     return (
@@ -79,7 +95,7 @@ const uploadImage = ({ navigation }) => {
 
             <View style={{ flexDirection: 'row', backgroundColor: '#fff', padding: 20 }}>
                 <Pressable
-                    onPress={() => navigation.navigate('salonTime')}
+                    onPress={() => navigation.navigate('SalonTime')}
                     style={styles.skipBtn}>
                     <Text
                         style={styles.txt}>
@@ -89,7 +105,7 @@ const uploadImage = ({ navigation }) => {
 
                 <View style={{ width: 15 }} />
                 <Pressable
-                    onPress={() => navigation.navigate('salonTime')}
+                    onPress={uploadImg}
                     style={styles.nextBtn}>
                     <Text
                         style={[styles.txt, { color: colors.white }]}>

@@ -53,26 +53,6 @@ export const verifyOtp = async (body) => {
     }
 }
 
-// Salonn Data
-export const salonData = async (body) => {
-    // const { token } = useSelector(state => state.auth)
-    console.log("Token  on salon Create", token);
-    console.log("Based on URL ::", BASE_URL + apiEndPoints.salons, body);
-    return;
-    let config = {
-        method: 'post',
-        url: `${BASE_URL + apiEndPoints.salons}`,
-        headers: { Authorization: token },
-        data: body
-    };
-    try {
-        return await axios(config);
-
-    } catch (e) {
-        console.log("errror", e);
-        return e;
-    }
-}
 
 
 export const createSalon = async (data) => {
@@ -87,9 +67,7 @@ export const createSalon = async (data) => {
     //     data: body
     // };
     try {
-        await axios.post(`${BASE_URL + apiEndPoints.salons}`, data, { headers: headers })
-            .then(res => console.log("Res :: ", res))
-            .catch(err => console.log("Err :: ", err));
+        return await axios.post(`${BASE_URL + apiEndPoints.salons}`, data, { headers: headers })
         // console.log("DTI :: ", dataItem);
         // return dataItem;
     } catch (e) {
@@ -97,6 +75,40 @@ export const createSalon = async (data) => {
         return e;
     }
 }
+
+
+
+
+// Put Api UPLOAD IMAGE
+export const uploadLogoImage = async (formData) => {
+    let token = await AsyncStorage.getItem('token');
+    console.log("Data  formdata : Item :: ", formData, token);
+
+    try {
+        axios({
+            url: `${BASE_URL + apiEndPoints.logoUpload}`,
+            method: 'PUT',
+            data: formData,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': token
+            }
+        })
+            .then(function (response) {
+                console.log("response :", response);
+            })
+            .catch(function (error) {
+                console.log("error from image :");
+            })
+    } catch (e) {
+        console.log("errror", e);
+        return e;
+    }
+}
+
+
+
 
 // salon Times
 export const salonsTime = async (body) => {

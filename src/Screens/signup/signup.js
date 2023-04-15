@@ -20,7 +20,7 @@ const Signup = ({ navigation, route }) => {
         first_name: '',
         last_name: '',
         mobile_number: '',
-        role: 'owner',
+        role: '2',
     });
 
     const onRegister = () => {

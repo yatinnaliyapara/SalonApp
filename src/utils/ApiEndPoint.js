@@ -3,5 +3,6 @@ export const apiEndPoints = {
     genrate_otp: 'generate-otp',
     login: 'login',
     salons: 'salons',
-    salonsTimings: 'salons/timings'
+    salonsTimings: 'salons/timings',
+    logoUpload: 'salons/logo',
 }

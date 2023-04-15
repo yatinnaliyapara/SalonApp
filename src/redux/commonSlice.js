@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createSalon, otpVerify, registerUser, salonData, salonsTime, verifyOtp } from "../service/CommonServices";
+import { createSalon, otpVerify, registerUser, salonData, salonsTime, uploadLogoImage, verifyOtp } from "../service/CommonServices";
 import { useNavigation } from "@react-navigation/native";
 import { navigate } from "../routes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -42,7 +42,7 @@ export const verifyOtpData = createAsyncThunk(
         const response = await verifyOtp(otpData);
         console.log("Response on login api token :::", response);
         if (response?.status === 200) {
-            navigate("SalonOwner");
+            navigate("UploadImage");
             await AsyncStorage.setItem("token", response?.data?.data?.access_token)
             return fulfillWithValue(response?.data?.data?.access_token);
         } else {
@@ -61,6 +61,7 @@ export const salonOwner = createAsyncThunk(
         const response = await createSalon(salonDetails)
         if (response?.status === 200) {
             navigate("UploadImage");
+            console.log("Navigate :::", navigate);
             return fulfillWithValue(response?.data?.data)
         } else {
             console.log("delete error case", response);
@@ -68,6 +69,24 @@ export const salonOwner = createAsyncThunk(
         return rejectWithValue(response?.response?.data?.error);
     }
 )
+
+
+// Salon upload Logo
+export const uploadLogo = createAsyncThunk(
+    'auth/salons',
+    async (logoFormData, { fulfillWithValue, rejectWithValue }) => {
+        const response = await uploadLogoImage(logoFormData)
+        if (response?.status === 200) {
+            navigate("SalonTime")
+            // console.log("Navigate :::", navigate);
+            return fulfillWithValue(response?.data?.data)
+        } else {
+            console.log("delete error case", response);
+        }
+        return rejectWithValue(response?.response?.data?.error);
+    }
+)
+
 
 // Salons Times
 export const salonTimedata = createAsyncThunk(
