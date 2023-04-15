@@ -7,6 +7,7 @@ import { constants } from "../../utils/constants";
 import fonts from "../../utils/fonts";
 import { useDispatch, useSelector } from "react-redux";
 import { salonOwner } from "../../redux/commonSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -23,7 +24,23 @@ const SalonOwner = ({ navigation }) => {
         country: '',
     })
     const [errors, setErrors] = React.useState(true);
+    const { token } = useSelector(state => state.auth)
+    const getData = async () => {
+        await AsyncStorage.setItem('token_data', JSON.stringify(token));
+        try {
+            const value = await AsyncStorage.getItem('token')
+            if (value !== null) {
+                console.log("Tok :: ", value);
+                // value previously stored
+            }
+        } catch (e) {
+            // error reading value
+        }
+    }
 
+    useEffect(() => {
+        getData()
+    }, [])
 
     const onSalonOwner = () => {
         let isValid = true;
@@ -63,12 +80,12 @@ const SalonOwner = ({ navigation }) => {
                 ...value
             }
             console.log("Is Data ::", isValid);
-            console.log("Form Data on :::", dispatch(salonOwner(formData)));
+            console.log("Form Data on :::", formData);
             dispatch(salonOwner(formData))
         }
     }
 
-    const { token } = useSelector(state => state.auth)
+
     console.log("Token Login && Not:::", token);
 
     const handleOnChange = (text, input) => {

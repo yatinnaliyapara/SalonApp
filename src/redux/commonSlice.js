@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { otpVerify, registerUser, salonData, salonsTime, verifyOtp } from "../service/CommonServices";
+import { createSalon, otpVerify, registerUser, salonData, salonsTime, verifyOtp } from "../service/CommonServices";
 import { useNavigation } from "@react-navigation/native";
 import { navigate } from "../routes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export const register = createAsyncThunk(
@@ -42,6 +43,7 @@ export const verifyOtpData = createAsyncThunk(
         console.log("Response on login api token :::", response);
         if (response?.status === 200) {
             navigate("SalonOwner");
+            await AsyncStorage.setItem("token", response?.data?.data?.access_token)
             return fulfillWithValue(response?.data?.data?.access_token);
         } else {
             console.log("delete error case", response);
@@ -55,9 +57,9 @@ export const verifyOtpData = createAsyncThunk(
 export const salonOwner = createAsyncThunk(
     'auth/salons',
     async (salonDetails, { fulfillWithValue, rejectWithValue }) => {
-        const response = await salonData(salonDetails);
-        console.log("Response on salon Create", response);
-        if (response?.status) {
+        console.log("Salon :: ", salonDetails);
+        const response = await createSalon(salonDetails)
+        if (response?.status === 200) {
             navigate("UploadImage");
             return fulfillWithValue(response?.data?.data)
         } else {

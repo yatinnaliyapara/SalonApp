@@ -23,8 +23,6 @@ const otpVerify = ({ navigation, route }) => {
     const navRef = useRef();
     const { mobile_number } = route?.params
 
-    console.log(route.params);
-
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -53,10 +51,6 @@ const otpVerify = ({ navigation, route }) => {
             dispatch(verifyOtpData(formData))
         }
     }
-
-    console.log('value :: ', value);
-
-
 
     return (
         <>

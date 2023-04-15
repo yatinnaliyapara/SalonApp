@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, SafeAreaView, Pressable, StyleSheet, Text, ScrollView, Image } from "react-native";
 import colors from "../../utils/colors";
 import * as Svg from "../../assets/Svg/svgs"
@@ -6,9 +6,46 @@ import { constants } from "../../utils/constants";
 import fonts from "../../utils/fonts";
 import Input from "../../Components/Input";
 import Button from "../../Components/Buttons";
+import { generateOtp } from "../../redux/commonSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 
 const Signin = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const { userdata, isLoading } = useSelector(state => state.auth);
+
+    const [errors, setErrors] = useState(true);
+
+    const [value, setValue] = useState({
+        mobile_number: ''
+    });
+
+    const onSigin = () => {
+        let isValid = true;
+        if (!value.mobile_number) {
+            console.log("C");
+            handleError('please enter mobileNumber', 'mobile_number'),
+                isValid = false;
+        }
+        console.log(isValid, value);
+        if (isValid) {
+            const formData = {
+                ...value
+            }
+            console.log("Is Data ::", isValid, formData);
+            dispatch(generateOtp(formData))
+        }
+    }
+
+    const handleError = (error, input) => {
+        setErrors(prevState => ({ ...prevState, [input]: error }));
+    };
+
+    const handleOnChange = (text, input) => {
+        setValue({ ...value, [input]: text });
+    };
+
+
     return (
 
         <>
@@ -32,15 +69,18 @@ const Signin = ({ navigation }) => {
                         <Input
                             label={constants?.Phone}
                             placeholder={constants?.Phone}
-                            keyboardType={"number-pad"}
-                            maxLength={10}
-                            leftIcon={'Phone'} />
+                            keyboardType={'number-pad'}
+                            leftIcon={'Phone'}
+                            onFocus={() => handleError(null, 'mobile_number ')}
+                            onChangeText={(text) => handleOnChange(text, 'mobile_number')}
+                            error={errors.mobile_number}
+                        />
 
 
                         <View style={styles.divider} />
 
                         <Button
-                            onPress={() => navigation.navigate('otpVerify')}
+                            onPress={onSigin}
                             label={constants?.getOtp} />
 
                         <View style={styles.divider} />

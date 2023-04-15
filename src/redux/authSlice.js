@@ -6,7 +6,8 @@ const initialState = {
     userdata: '',
     isLoading: false,
     errorData: null,
-    token: null
+    token: null,
+    salonDetails: null
 }
 
 
@@ -50,14 +51,17 @@ export const authSlice = createSlice({
 
             // salon Details
             .addCase(salonOwner.pending, (state) => {
-                state.isLoading = true
+                state.isLoading = true,
+                state.salonDetails = null
             })
             .addCase(salonOwner.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.salonDetails = action.payload;
                 state.errorData = null;
             })
             .addCase(salonOwner.rejected, (state, action) => {
                 state.isLoading = false;
+                state.salonDetails = null;
                 state.errorData = action.payload;
             })
     }

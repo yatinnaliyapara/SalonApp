@@ -49,7 +49,6 @@ const Signup = ({ navigation, route }) => {
                 role: 'owner'
             }
             console.log("Is Data ::", isValid, formData);
-            // navigation.navigate("OtpVerify", {mobile_number:'8456565689'});
             dispatch(register(formData))
         }
     }
