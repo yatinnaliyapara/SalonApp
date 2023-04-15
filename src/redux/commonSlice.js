@@ -81,7 +81,6 @@ export const salonTimedata = createAsyncThunk(
             return fulfillWithValue(res?.data?.data)
         } else {
             console.log("delete error case", res);
-
         }
         return rejectWithValue(res?.res?.data?.Error);
 
